@@ -197,6 +197,22 @@ app.get('/api/families/:id', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
+// Create a new family
+//----------------------------------------------------------------------------
+app.post('/api/families', async (req, res) => {
+    try {
+        const collection = database.collection('families');
+        var family = {
+            family_name: req.body.family_name
+        };
+        const result = await collection.insertOne(family);
+        res.status(201).send({ _id: result.insertedId });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+})
+
+//----------------------------------------------------------------------------
 // Update an existing family
 //----------------------------------------------------------------------------
 app.put('/api/families/:id', async (req, res) => {
