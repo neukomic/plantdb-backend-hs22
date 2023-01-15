@@ -92,8 +92,10 @@ app.post('/api/cars', async (req, res) => {
     try {
         const collection = database.collection('cars');
         var car = {
-            common_name: req.body.common_name,
-            scientific_name: req.body.scientific_name
+            make: req.body.make,
+            model: req.body.model,
+            year: req.body.year,
+            automatic: req.body.automatic
         };
         const result = await collection.insertOne(car);
         res.status(201).send({ _id: result.insertedId });
@@ -203,7 +205,13 @@ app.post('/api/users', async (req, res) => {
     try {
         const collection = database.collection('users');
         var user = {
-            user_name: req.body.user_name
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            phone: req.body.phone,
+            email: req.body.email,
+            postalZip: req.body.postalZip,
+            region: req.body.region,
+            country: req.body.country
         };
         const result = await collection.insertOne(user);
         res.status(201).send({ _id: result.insertedId });
@@ -232,6 +240,33 @@ app.put('/api/users/:id', async (req, res) => {
         }
         else {
             res.send({ status: "User with id " + id + " has been updated." });
+        }
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+})
+
+//----------------------------------------------------------------------------
+// Delete an existing user
+//----------------------------------------------------------------------------
+app.delete('/api/users/:id', async (req, res) => {
+    // read the path parameter :id
+    let id = req.params.id;
+    try {
+        const collection = database.collection('users');
+        const query = { _id: ObjectId(id) }; // filter by id
+        const result = await collection.deleteOne(query);
+        if (result.deletedCount === 0) {
+            let responseBody = {
+                status: "No object with id " + id
+            }
+            res.status(404).send(responseBody);
+        }
+        else {
+            let responseBody = {
+                status: "Object with id " + id + " has been successfully deleted."
+            }
+            res.send(responseBody);
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
