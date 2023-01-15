@@ -26,7 +26,7 @@ client.connect((error, db) => {
         console.log(error.message);
     }
     else {
-        database = db.db('plantDB');
+        database = db.db('CarRentalDB');
         console.log("Successfully connected to MongoDB.");
     }
 })
@@ -39,16 +39,16 @@ client.connect((error, db) => {
 // Welcome message
 //--------------------------------------------------------------------------------------------------
 app.get('/api', async (req, res) => {
-    res.send("Welcome to the Plant Database API");
+    res.send("Welcome to the Car Rental Database API");
 })
 
 
 //--------------------------------------------------------------------------------------------------
-// Get all plants
+// Get all cars
 //--------------------------------------------------------------------------------------------------
-app.get('/api/plants', async (req, res) => {
+app.get('/api/cars', async (req, res) => {
     try {
-        const collection = database.collection('plants');
+        const collection = database.collection('cars');
         // You can specify a query/filter here
         // See https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/query-document/
         const query = {};
@@ -61,13 +61,13 @@ app.get('/api/plants', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Get a plant by their id
+// Get a car by their id
 //----------------------------------------------------------------------------
-app.get('/api/plants/:id', async (req, res) => {
+app.get('/api/cars/:id', async (req, res) => {
     // read the path parameter :id
     let id = req.params.id;
     try {
-        const collection = database.collection('plants');
+        const collection = database.collection('cars');
         const query = { _id: ObjectId(id) }; // filter by id
         const result = await collection.findOne(query);
         if (!result) {
@@ -86,16 +86,16 @@ app.get('/api/plants/:id', async (req, res) => {
 
 
 //----------------------------------------------------------------------------
-// Create a new plant
+// Create a new car
 //----------------------------------------------------------------------------
-app.post('/api/plants', async (req, res) => {
+app.post('/api/cars', async (req, res) => {
     try {
-        const collection = database.collection('plants');
-        var plant = {
+        const collection = database.collection('cars');
+        var car = {
             common_name: req.body.common_name,
             scientific_name: req.body.scientific_name
         };
-        const result = await collection.insertOne(plant);
+        const result = await collection.insertOne(car);
         res.status(201).send({ _id: result.insertedId });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -103,25 +103,25 @@ app.post('/api/plants', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Update an existing plant
+// Update an existing car
 //----------------------------------------------------------------------------
-app.put('/api/plants/:id', async (req, res) => {
+app.put('/api/cars/:id', async (req, res) => {
     // read the path parameter :id
     let id = req.params.id;
-    let plant = req.body;
-    delete plant._id; // delete the _id from the object, because the _id cannot be updated
+    let car = req.body;
+    delete car._id; // delete the _id from the object, because the _id cannot be updated
     try {
-        const collection = database.collection('plants');
+        const collection = database.collection('cars');
         const query = { _id: ObjectId(id) }; // filter by id
-        const result = await collection.updateOne(query, { $set: plant });
+        const result = await collection.updateOne(query, { $set: car });
         if (result.matchedCount === 0) {
             let responseBody = {
-                status: "No plant with id " + id
+                status: "No car with id " + id
             }
             res.status(404).send(responseBody);
         }
         else {
-            res.send({ status: "Plant with id " + id + " has been updated." });
+            res.send({ status: "Car with id " + id + " has been updated." });
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -129,13 +129,13 @@ app.put('/api/plants/:id', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Delete an existing plant
+// Delete an existing car
 //----------------------------------------------------------------------------
-app.delete('/api/plants/:id', async (req, res) => {
+app.delete('/api/cars/:id', async (req, res) => {
     // read the path parameter :id
     let id = req.params.id;
     try {
-        const collection = database.collection('plants');
+        const collection = database.collection('cars');
         const query = { _id: ObjectId(id) }; // filter by id
         const result = await collection.deleteOne(query);
         if (result.deletedCount === 0) {
@@ -156,11 +156,11 @@ app.delete('/api/plants/:id', async (req, res) => {
 })
 
 //--------------------------------------------------------------------------------------------------
-// Get all families
+// Get all users
 //--------------------------------------------------------------------------------------------------
-app.get('/api/families', async (req, res) => {
+app.get('/api/users', async (req, res) => {
     try {
-        const collection = database.collection('families');
+        const collection = database.collection('users');
         // You can specify a query/filter here
         // See https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/query-document/
         const query = {};
@@ -173,13 +173,13 @@ app.get('/api/families', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Get a family by their id
+// Get a user by their id
 //----------------------------------------------------------------------------
-app.get('/api/families/:id', async (req, res) => {
+app.get('/api/users/:id', async (req, res) => {
     // read the path parameter :id
     let id = req.params.id;
     try {
-        const collection = database.collection('families');
+        const collection = database.collection('users');
         const query = { _id: ObjectId(id) }; // filter by id
         const result = await collection.findOne(query);
         if (!result) {
@@ -197,15 +197,15 @@ app.get('/api/families/:id', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Create a new family
+// Create a new user
 //----------------------------------------------------------------------------
-app.post('/api/families', async (req, res) => {
+app.post('/api/users', async (req, res) => {
     try {
-        const collection = database.collection('families');
-        var family = {
-            family_name: req.body.family_name
+        const collection = database.collection('users');
+        var user = {
+            user_name: req.body.user_name
         };
-        const result = await collection.insertOne(family);
+        const result = await collection.insertOne(user);
         res.status(201).send({ _id: result.insertedId });
     } catch (error) {
         res.status(500).send({ error: error.message });
@@ -213,25 +213,25 @@ app.post('/api/families', async (req, res) => {
 })
 
 //----------------------------------------------------------------------------
-// Update an existing family
+// Update an existing user
 //----------------------------------------------------------------------------
-app.put('/api/families/:id', async (req, res) => {
+app.put('/api/users/:id', async (req, res) => {
     // read the path parameter :id
     let id = req.params.id;
-    let family = req.body;
-    delete family._id; // delete the _id from the object, because the _id cannot be updated
+    let user = req.body;
+    delete user._id; // delete the _id from the object, because the _id cannot be updated
     try {
-        const collection = database.collection('families');
+        const collection = database.collection('users');
         const query = { _id: ObjectId(id) }; // filter by id
-        const result = await collection.updateOne(query, { $set: family });
+        const result = await collection.updateOne(query, { $set: user });
         if (result.matchedCount === 0) {
             let responseBody = {
-                status: "No family with id " + id
+                status: "No user with id " + id
             }
             res.status(404).send(responseBody);
         }
         else {
-            res.send({ status: "Family with id " + id + " has been updated." });
+            res.send({ status: "User with id " + id + " has been updated." });
         }
     } catch (error) {
         res.status(500).send({ error: error.message });
