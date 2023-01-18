@@ -94,7 +94,8 @@ app.post('/api/cars', async (req, res) => {
             make: req.body.make,
             model: req.body.model,
             year: req.body.year,
-            automatic: req.body.automatic
+            automatic: req.body.automatic,
+            users: req.body.users
         };
         const result = await collection.insertOne(car);
         res.status(201).send({ _id: result.insertedId });
